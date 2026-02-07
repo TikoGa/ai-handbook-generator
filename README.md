@@ -1,6 +1,6 @@
 # 📘 AI Handbook Generator (LightRAG + LongWriter)
 
-An end-to-end AI engineering project that generates long-form handbooks (20,000+ words) from PDF documents using Retrieval-Augmented Generation (RAG), LightRAG-compatible architecture, Supabase vector storage, and a Hugging Face LLM.
+An end-to-end AI engineering project that generates long-form handbooks (20,000+ words) from PDF documents using Retrieval-Augmented Generation (RAG), LightRAG-compatible architecture, Supabase vector storage, and a Grok.
 
 This project was built as part of an AI Engineering assignment and focuses on system design, modularity, and long-form generation pipelines rather than model fine-tuning.
 
