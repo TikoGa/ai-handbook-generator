@@ -11,7 +11,7 @@ This project was built as part of an AI Engineering assignment and focuses on sy
 - 📄 PDF upload and text extraction
 - ✂️ Chunking and semantic indexing
 - 🧠 LightRAG-style retrieval using Supabase + pgvector
-- 🤖 Hugging Face LLM  for section writing
+- 🤖 Grok  for section writing
 - 📝 LongWriter-style iterative handbook generation
 - 📘 20,000+ word handbook generation
 - 💬 Chat-based RAG interface (Streamlit)
@@ -33,7 +33,7 @@ Supabase Vector DB (pgvector)
 ↓
 LightRAG Retrieval
 ↓
-Hugging Face LLM (FLAN-T5)
+Grok
 ↓
 LongWriter-style Iterative Loop
 ↓
@@ -64,7 +64,7 @@ The handbook generator follows a LongWriter-style architecture:
 - Section-by-section writing
 - Iterative loop until target word count (20,000 words)
 - Each section retrieves fresh context via LightRAG
-- Hugging Face LLM rewrites retrieved context into coherent text
+- Grok LLM rewrites retrieved context into coherent text
 
 This design supports scalable long-form generation without relying on a single prompt.
 
@@ -77,7 +77,7 @@ This design supports scalable long-form generation without relying on a single p
 - **PDF Processing:** pdfplumber
 - **Embeddings:** Sentence-BERT
 - **Vector DB:** Supabase + pgvector
-- **LLM:** Hugging Face FLAN-T5 (local inference)
+- **LLM:** Grok
 - **Environment:** python-dotenv
 
 ---
