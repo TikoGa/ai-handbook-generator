@@ -3,7 +3,7 @@
 
 ## Overview
 
-This project implements a complete Retrieval-Augmented Generation (RAG) pipeline capable of producing long-form handbooks exceeding 20,000 words from uploaded PDF documents. The system combines LightRAG-style retrieval, Supabase vector storage, and a Hugging Face language model with a LongWriter-style iterative generation loop.
+This project implements a complete Retrieval-Augmented Generation (RAG) pipeline capable of producing long-form handbooks exceeding 20,000 words from uploaded PDF documents. The system combines LightRAG-style retrieval, Supabase vector storage, and a Grok  model with a LongWriter-style iterative generation loop.
 
 The primary goal of the project is to demonstrate AI engineering skills in system design, modularity, retrieval, and long-form generation rather than optimizing language model output quality.
 
