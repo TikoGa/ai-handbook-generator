@@ -1,13 +1,6 @@
 
 ---
 
-# 📄 UPDATED `WRITEUP.md` (FINAL)
-
-👉 Ստեղծիր `WRITEUP.md` և տեղադրիր սա․
-
-```markdown
-# AI Engineering Assignment – Final Write-up
-
 ## Overview
 
 This project implements a complete Retrieval-Augmented Generation (RAG) pipeline capable of producing long-form handbooks exceeding 20,000 words from uploaded PDF documents. The system combines LightRAG-style retrieval, Supabase vector storage, and a Hugging Face language model with a LongWriter-style iterative generation loop.
@@ -24,7 +17,7 @@ The pipeline consists of the following stages:
 2. Chunking and semantic embedding
 3. Vector storage using Supabase with pgvector
 4. LightRAG-compatible semantic retrieval
-5. Section-level generation using a Hugging Face LLM
+5. Section-level generation using a Grok
 6. Iterative LongWriter-style handbook assembly
 
 Each stage is implemented as a modular component, allowing independent scaling or replacement.
@@ -45,7 +38,7 @@ The handbook generator follows an iterative strategy inspired by LongWriter:
 
 - A topic-based outline is generated
 - Each section retrieves relevant context via LightRAG
-- A Hugging Face Seq2Seq model rewrites the retrieved context into structured prose
+- A Grok model rewrites the retrieved context into structured prose
 - Sections are appended iteratively until the target length (20,000 words) is reached
 
 This approach avoids single-prompt generation and enables scalable long-form content creation.
@@ -54,7 +47,7 @@ This approach avoids single-prompt generation and enables scalable long-form con
 
 ## Language Model Integration
 
-A Hugging Face FLAN-T5 model is used for local, free inference. The model is integrated using `AutoModelForSeq2SeqLM` and `generate()` to ensure correct handling of encoder–decoder architectures.
+A Grok model is used for local, free inference. The model is integrated using `AutoModelForSeq2SeqLM` and `generate()` to ensure correct handling of encoder–decoder architectures.
 
 Decoding constraints (beam search, repetition penalties) are applied to improve stability and prevent degeneration.
 
@@ -79,4 +72,4 @@ Decoding constraints (beam search, repetition penalties) are applied to improve 
 
 ## Conclusion
 
-This submission implements all core requirements of the assignment: LightRAG integration, Supabase vector storage, Hugging Face LLM usage, and LongWriter-style long-form generation. The system demonstrates a production-oriented AI engineering approach with emphasis on modularity, reliability, and scalability.
+This submission implements all core requirements of the assignment: LightRAG integration, Supabase vector storage, Grok usage, and LongWriter-style long-form generation. The system demonstrates a production-oriented AI engineering approach with emphasis on modularity, reliability, and scalability.
