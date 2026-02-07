@@ -1,44 +1,44 @@
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-import torch
+import os
+import requests
 
 
-class HFWriter:
+class GrokWriter:
     def __init__(self):
-        model_name = "google/flan-t5-small"
-
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model.to(self.device)
+        self.api_key = os.getenv("GROK_API_KEY")
+        self.api_url = "https://api.x.ai/v1/chat/completions"
 
     def write_section(self, title: str, context: str) -> str:
+        if not self.api_key:
+            return "GROK_API_KEY is not set."
+
         prompt = (
-            f"Write a clear and structured textbook section titled '{title}'. "
-            f"Use only the information provided.\n\n"
-            f"Information:\n{context}\n"
+            "You are a document-grounded assistant.\n\n"
+            "Write a section using ONLY the information in the context.\n"
+            "Do NOT add external knowledge.\n"
+            "If the context does not contain enough information, say so.\n\n"
+            f"Section title:\n{title}\n\n"
+            f"Context:\n{context}\n\n"
+            "Answer:\n"
         )
 
-        inputs = self.tokenizer(
-            prompt,
-            return_tensors="pt",
-            truncation=True,
-            max_length=512
-        ).to(self.device)
-
-        outputs = self.model.generate(
-            **inputs,
-            max_new_tokens=200,
-            num_beams=4,
-            repetition_penalty=1.5,
-            no_repeat_ngram_size=3,
-            early_stopping=True
+        response = requests.post(
+            self.api_url,
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "grok-4.1",
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.2,
+            },
+            timeout=60,
         )
 
-        generated_text = self.tokenizer.decode(
-            outputs[0],
-            skip_special_tokens=True
-        )
+        if response.status_code != 200:
+            return f"Grok API error: {response.text}"
 
-        return generated_text.strip()
-
+        data = response.json()
+        return data["choices"][0]["message"]["content"].strip()

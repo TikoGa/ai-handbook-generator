@@ -1,5 +1,5 @@
 from rag.vectorstore import LightRAGStore
-from rag.llm_writer import HFWriter
+from rag.llm_writer import GrokWriter
 
 TARGET_WORDS = 2000
 
@@ -7,7 +7,7 @@ TARGET_WORDS = 2000
 class HandbookGenerator:
     def __init__(self):
         self.store = LightRAGStore()
-        self.writer = HFWriter()
+        self.writer = GrokWriter()
         self.handbook = ""
 
     def generate_outline(self, topic: str):
@@ -30,7 +30,11 @@ class HandbookGenerator:
         context = " ".join(context_chunks)
 
         section_text = f"\n\n## {section_title}\n\n"
-        section_text += self.writer.write_section(section_title, context)
+        section_text += self.writer.write_section(
+    	full_title,
+    	context + "\n\nPreviously written text:\n" + self.handbook[-8000:]
+)
+
 
         return section_text
 
