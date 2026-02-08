@@ -1,46 +1,54 @@
 import os
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-class GrokWriter:
+class OpenRouterWriter:
+    """
+    OpenRouter-based LLM writer (FREE models).
+    Uses DeepSeek Chat for grounded answer generation.
+    """
+
     def __init__(self):
-        self.api_key = os.getenv("GROK_API_KEY")
-        self.api_url = "https://api.x.ai/v1/chat/completions"
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
+        self.api_url = "https://openrouter.ai/api/v1/chat/completions"
 
     def write_section(self, title: str, context: str, question: str = None) -> str:
-        """
-        Generates a grounded, human-readable answer using Grok.
-        The model is allowed to rephrase and summarize, but NOT to add new facts.
-        """
-
         if not self.api_key:
-            return "GROK_API_KEY is not set."
+            return "OPENROUTER_API_KEY is not set."
 
-        if question:
-            user_query = question
-        else:
-            user_query = title
+        if not context.strip():
+            return "The uploaded document does not contain this information."
+
+        user_query = question if question else title
 
         prompt = (
-            "You are a document-grounded assistant.\n\n"
-            "Answer the question using ONLY the information from the context below.\n"
-            "You MAY rephrase and summarize the information for clarity,\n"
-            "but you MUST NOT add any new facts or external knowledge.\n\n"
-            "If the answer is not present in the context, respond exactly with:\n"
-            "\"The uploaded document does not contain this information.\"\n\n"
-            f"Context:\n{context}\n\n"
-            f"Question:\n{user_query}\n\n"
-            "Answer:\n"
-        )
+                  "You are a document-grounded assistant.\n"
+                  "Answer the question using ONLY the information from the context below.\n"
+                  "You MAY rephrase and summarize the information for clarity,\n"
+                  "but you MUST NOT add any new facts or external knowledge.\n\n"
+                  "IMPORTANT RULES:\n"
+                  "- Do NOT return JSON\n"
+                  "- Do NOT include IDs, categories, or metadata\n"
+                  "- Do NOT explain how you derived the answer\n"
+                  "- Return ONLY a direct, natural-language answer to the question\n\n"
+                  f"Context:\n{context}\n\n"
+                  f"Question:\n{user_query}\n\n"
+                  "Answer (plain text only):"
+                  ) 
 
         response = requests.post(
             self.api_url,
             headers={
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
+                "HTTP-Referer": "http://localhost",
+                "X-Title": "ai-handbook-generator",
             },
             json={
-                "model": "grok-4.1",
+                "model": "deepseek/deepseek-chat",
                 "messages": [
                     {"role": "user", "content": prompt}
                 ],
@@ -50,8 +58,7 @@ class GrokWriter:
         )
 
         if response.status_code != 200:
-            return f"Grok API error: {response.text}"
+            return f"OpenRouter API error: {response.text}"
 
         data = response.json()
-
         return data["choices"][0]["message"]["content"].strip()

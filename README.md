@@ -1,93 +1,66 @@
-# 📘 AI Handbook Generator (LightRAG + LongWriter)
+# AI Handbook Generator (RAG-based PDF QA)
 
-An end-to-end AI engineering project that generates long-form handbooks (20,000+ words) from PDF documents using Retrieval-Augmented Generation (RAG), LightRAG-compatible architecture, Supabase vector storage, and a Grok.
+This project implements a Retrieval-Augmented Generation (RAG) system that allows users to upload a PDF document and ask natural language questions about its content. The system retrieves relevant passages from the document and generates grounded, human-readable answers using a large language model.
 
-This project was built as part of an AI Engineering assignment and focuses on system design, modularity, and long-form generation pipelines rather than model fine-tuning.
-
----
-
-## 🚀 Key Features
-
-- 📄 PDF upload and text extraction
-- ✂️ Chunking and semantic indexing
-- 🧠 LightRAG-style retrieval using Supabase + pgvector
-- 🤖 Grok  for section writing
-- 📝 LongWriter-style iterative handbook generation
-- 📘 20,000+ word handbook generation
-- 💬 Chat-based RAG interface (Streamlit)
-- ⬇️ Exportable handbook (Markdown)
+The focus of this project is correctness, grounding, and robustness rather than UI complexity.
 
 ---
 
-## 🏗️ System Architecture
+## ✨ Features
 
-PDF Upload
-↓
-Text Extraction (pdfplumber)
-↓
-Chunking
-↓
-Sentence-BERT Embeddings
-↓
-Supabase Vector DB (pgvector)
-↓
-LightRAG Retrieval
-↓
-Grok
-↓
-LongWriter-style Iterative Loop
-↓
-20,000+ Word Handbook
-
-
-
-The retrieval and generation layers are fully decoupled, allowing easy replacement of models or vector stores.
+- PDF upload and text extraction
+- Text chunking and vector embedding
+- Vector storage using Supabase
+- Semantic retrieval (LightRAG-style)
+- Grounded answer generation using a free LLM via OpenRouter
+- Protection against hallucination by restricting answers to document context
+- Automatic clearing of old document embeddings on new upload
 
 ---
 
-## 🧠 Retrieval-Augmented Generation (RAG)
+## 🧠 Architecture Overview
 
-- Embeddings: `sentence-transformers/all-MiniLM-L6-v2`
-- Vector store: Supabase PostgreSQL with `pgvector`
-- Similarity search: cosine distance via SQL RPC
-- Retrieval strategy: top-k semantic search
+1. **PDF Parsing**
+   - Extracts raw text from uploaded PDF files.
 
-All generated content is grounded strictly in retrieved document context.
+2. **Chunking**
+   - Splits the text into overlapping chunks suitable for semantic search.
 
----
+3. **Vector Store (Supabase)**
+   - Each chunk is embedded using a sentence-transformer model.
+   - Embeddings are stored in Supabase for similarity search.
 
-## ✍️ LongWriter-Style Handbook Generation
+4. **Retrieval**
+   - For each user query, the most relevant chunks are retrieved using vector similarity.
 
-The handbook generator follows a LongWriter-style architecture:
-
-- Topic-based outline generation
-- Section-by-section writing
-- Iterative loop until target word count (20,000 words)
-- Each section retrieves fresh context via LightRAG
-- Grok LLM rewrites retrieved context into coherent text
-
-This design supports scalable long-form generation without relying on a single prompt.
+5. **Answer Generation**
+   - Retrieved chunks are passed to an LLM with a strict prompt.
+   - The model may rephrase or summarize but is not allowed to add external information.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Language:** Python 3
-- **UI:** Streamlit
-- **PDF Processing:** pdfplumber
-- **Embeddings:** Sentence-BERT
-- **Vector DB:** Supabase + pgvector
-- **LLM:** Grok
-- **Environment:** python-dotenv
+- **Frontend**: Streamlit
+- **Vector Database**: Supabase (PostgreSQL + pgvector)
+- **Embeddings**: sentence-transformers (MiniLM)
+- **LLM Provider**: OpenRouter (free models)
+- **Language**: Python
 
 ---
 
-## ▶️ How to Run
+## 🚀 How to Run
 
 ### 1. Install dependencies
 ```bash
 pip install -r requirements.txt
 
+
+SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_KEY=your_supabase_service_key
+OPENROUTER_API_KEY=your_openrouter_key
+
+
+
 streamlit run app.py
-python test_handbook.py
 

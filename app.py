@@ -4,7 +4,7 @@ from pdf_processing.parser import extract_text_from_pdf
 from rag.chunker import chunk_text
 
 from rag.vectorstore import LightRAGStore
-from rag.llm_writer import GrokWriter
+from rag.llm_writer import OpenRouterWriter
 
 
 st.set_page_config(page_title="PDF RAG Chat", layout="centered")
@@ -61,8 +61,7 @@ if question:
         else:
             retrieved_context = "\n\n".join(results)
 
-            # 🤖 Generate answer using Grok
-            writer = GrokWriter()
+            writer = OpenRouterWriter()
             answer = writer.write_section(
                 title="Question",
                 context=retrieved_context,
